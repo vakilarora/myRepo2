@@ -1,0 +1,149 @@
+Q: What are Channels and Kernels (according to EVA)?
+Ans: A kernel is feature extractor, it runs over the given image and whereever it sees the feature, corresponding cells in output channel fires up.
+Kernels in first few layers generally extract very basis features and subsequent layers extract move complex features.
+A typical pattern of features is
+
+Level 1: Parts of lines and gradients
+Level 2: Lines and gradients
+Level 3: Patterns and textures
+Level 4: Parts of Objects
+Level 5: Objects
+Level 6: Scenes
+
+A channel is a feauture map of features extracted by a kernel. A feature map can be viewed as another sum-image having only the given features.
+Some examples of channels are:
+- Color channels like RGB
+- Vertical lines only channel
+- Horizonal lines channel
+- Fur Channel
+- Car Tires channe
+- Blue Cars Channel
+- Horse's channel
+
+
+
+Q:Why should we only (well mostly) use 3x3 Kernels?
+A 3x3 Kernel has some interesting properties which makes it suitable for most of the cases.
+ 1) This is very small mertrix.
+ 2) One can make any larger odd sized kenel using 3x3 kernel.
+    For example:
+        two back to back 3x3 kernels are equal to a 5x5 kernel
+        three back to back 3x3 kernels are equal to a 7x7 kernel
+        four back to back 3x3 kernels are equal to a 9x9 kernel
+        and so on.
+        
+ 3) Number of parameters required in combination of 3x3 kernel is much lesser than corresponding lerger kernels
+    For exmple 
+       A 5x5 kernel has 25 parameters where as equivalent two 3x3 kernels has 18 (9x2) parameters
+       A 7x7 kernel has 47 parameters where as equivalent three 3x3 kernels has 279x3) parameters
+       
+ 4) The number of computations is directly proportionate to the number of parameters and hence it 3x3 would be faster.
+ 
+ 5) NVIDIA GPUs are eccelerated for 3x3.
+    
+
+
+Q: How many times do we need to perform 3x3 convolution operation to reach 1x1 from 199x199 (show calculations)
+
+Answer is 99, here is the calculation.
+
+|   Input   |   Kernel     | Output  |
+| 199 x 199 | 3 x 3 kernel |197 x 197|
+| 197 x 197 | 3 x 3 kernel |195 x 195|
+| 195 x 195 | 3 x 3 kernel |193 x 193|
+| 193 x 193 | 3 x 3 kernel |191 x 191|
+| 191 x 191 | 3 x 3 kernel |189 x 189|
+| 189 x 189 | 3 x 3 kernel |187 x 187|
+| 187 x 187 | 3 x 3 kernel |185 x 185|
+| 185 x 185 | 3 x 3 kernel |183 x 183|
+| 183 x 183 | 3 x 3 kernel |181 x 181|
+| 181 x 181 | 3 x 3 kernel |179 x 179|
+| 179 x 179 | 3 x 3 kernel |177 x 177|
+| 177 x 177 | 3 x 3 kernel |175 x 175|
+| 175 x 175 | 3 x 3 kernel |173 x 173|
+| 173 x 173 | 3 x 3 kernel |171 x 171|
+| 171 x 171 | 3 x 3 kernel |169 x 169|
+| 169 x 169 | 3 x 3 kernel |167 x 167|
+| 167 x 167 | 3 x 3 kernel |165 x 165|
+| 165 x 165 | 3 x 3 kernel |163 x 163|
+| 163 x 163 | 3 x 3 kernel |161 x 161|
+| 161 x 161 | 3 x 3 kernel |159 x 159|
+| 159 x 159 | 3 x 3 kernel |157 x 157|
+| 157 x 157 | 3 x 3 kernel |155 x 155|
+| 155 x 155 | 3 x 3 kernel |153 x 153|
+| 153 x 153 | 3 x 3 kernel |151 x 151|
+| 151 x 151 | 3 x 3 kernel |149 x 149|
+| 149 x 149 | 3 x 3 kernel |147 x 147|
+| 147 x 147 | 3 x 3 kernel |145 x 145|
+| 145 x 145 | 3 x 3 kernel |143 x 143|
+| 143 x 143 | 3 x 3 kernel |141 x 141|
+| 141 x 141 | 3 x 3 kernel |139 x 139|
+| 139 x 139 | 3 x 3 kernel |137 x 137|
+| 137 x 137 | 3 x 3 kernel |135 x 135|
+| 135 x 135 | 3 x 3 kernel |133 x 133|
+| 133 x 133 | 3 x 3 kernel |131 x 131|
+| 131 x 131 | 3 x 3 kernel |129 x 129|
+| 129 x 129 | 3 x 3 kernel |127 x 127|
+| 127 x 127 | 3 x 3 kernel |125 x 125|
+| 125 x 125 | 3 x 3 kernel |123 x 123|
+| 123 x 123 | 3 x 3 kernel |121 x 121|
+| 121 x 121 | 3 x 3 kernel |119 x 119|
+| 119 x 119 | 3 x 3 kernel |117 x 117|
+| 117 x 117 | 3 x 3 kernel |115 x 115|
+| 115 x 115 | 3 x 3 kernel |113 x 113|
+| 113 x 113 | 3 x 3 kernel |111 x 111|
+| 111 x 111 | 3 x 3 kernel |109 x 109|
+| 109 x 109 | 3 x 3 kernel |107 x 107|
+| 107 x 107 | 3 x 3 kernel |105 x 105|
+| 105 x 105 | 3 x 3 kernel |103 x 103|
+| 103 x 103 | 3 x 3 kernel |101 x 101|
+| 101 x 101 | 3 x 3 kernel | 99 x  99|
+|  99 x  99 | 3 x 3 kernel | 97 x  97|
+|  97 x  97 | 3 x 3 kernel | 95 x  95|
+|  95 x  95 | 3 x 3 kernel | 93 x  93|
+|  93 x  93 | 3 x 3 kernel | 91 x  91|
+|  91 x  91 | 3 x 3 kernel | 89 x  89|
+|  89 x  89 | 3 x 3 kernel | 87 x  87|
+|  87 x  87 | 3 x 3 kernel | 85 x  85|
+|  85 x  85 | 3 x 3 kernel | 83 x  83|
+|  83 x  83 | 3 x 3 kernel | 81 x  81|
+|  81 x  81 | 3 x 3 kernel | 79 x  79|
+|  79 x  79 | 3 x 3 kernel | 77 x  77|
+|  77 x  77 | 3 x 3 kernel | 75 x  75|
+|  75 x  75 | 3 x 3 kernel | 73 x  73|
+|  73 x  73 | 3 x 3 kernel | 71 x  71|
+|  71 x  71 | 3 x 3 kernel | 69 x  69|
+|  69 x  69 | 3 x 3 kernel | 67 x  67|
+|  67 x  67 | 3 x 3 kernel | 65 x  65|
+|  65 x  65 | 3 x 3 kernel | 63 x  63|
+|  63 x  63 | 3 x 3 kernel | 61 x  61|
+|  61 x  61 | 3 x 3 kernel | 59 x  59|
+|  59 x  59 | 3 x 3 kernel | 57 x  57|
+|  57 x  57 | 3 x 3 kernel | 55 x  55|
+|  55 x  55 | 3 x 3 kernel | 53 x  53|
+|  53 x  53 | 3 x 3 kernel | 51 x  51|
+|  51 x  51 | 3 x 3 kernel | 49 x  49|
+|  49 x  49 | 3 x 3 kernel | 47 x  47|
+|  47 x  47 | 3 x 3 kernel | 45 x  45|
+|  45 x  45 | 3 x 3 kernel | 43 x  43|
+|  43 x  43 | 3 x 3 kernel | 41 x  41|
+|  41 x  41 | 3 x 3 kernel | 39 x  39|
+|  39 x  39 | 3 x 3 kernel | 37 x  37|
+|  37 x  37 | 3 x 3 kernel | 35 x  35|
+|  35 x  35 | 3 x 3 kernel | 33 x  33|
+|  33 x  33 | 3 x 3 kernel | 31 x  31|
+|  31 x  31 | 3 x 3 kernel | 29 x  29|
+|  29 x  29 | 3 x 3 kernel | 27 x  27|
+|  27 x  27 | 3 x 3 kernel | 25 x  25|
+|  25 x  25 | 3 x 3 kernel | 23 x  23|
+|  23 x  23 | 3 x 3 kernel | 21 x  21|
+|  21 x  21 | 3 x 3 kernel | 19 x  19|
+|  19 x  19 | 3 x 3 kernel | 17 x  17|
+|  17 x  17 | 3 x 3 kernel | 15 x  15|
+|  15 x  15 | 3 x 3 kernel | 13 x  13|
+|  13 x  13 | 3 x 3 kernel | 11 x  11|
+|  11 x  11 | 3 x 3 kernel |  9 x   9|
+|   9 x   9 | 3 x 3 kernel |  7 x   7|
+|   7 x   7 | 3 x 3 kernel |  5 x   5|
+|   5 x   5 | 3 x 3 kernel |  3 x   3|
+|   3 x   3 | 3 x 3 kernel |  1 x   1|
